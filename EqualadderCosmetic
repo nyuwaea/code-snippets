@@ -110,7 +110,7 @@ end
 
 local EQparts = GetEQparts()
 
-RunService.RenderStepped:Connect(function(_, delta)
+RunService.RenderStepped:Connect(function(delta)
 	local now = os.clock()
 	
 	if song.BPM and now - start >= song.offset / pitch then
