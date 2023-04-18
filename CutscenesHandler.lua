@@ -7,15 +7,22 @@
 				Cutscenes:Play("Example", false, true)
 ]]
 
+------------► ► ►	SERVICES	◄ ◄ ◄------------
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+------------► ► ►	VARIABLES	◄ ◄ ◄------------
+
+local Splines = require(ReplicatedStorage.Modules.Splines)
+local CutsceneCoordinates = workspace.CutsceneCoordinates
+
+------------► ► ►	 MODULE		◄ ◄ ◄------------
+
 local Cutscenes = {}
 Cutscenes.__index = Cutscenes
 
-local RunService = game:GetService("RunService")
-local Splines = require(game:GetService("ReplicatedStorage").Modules.Splines)
-
-local cutsceneCoordinates = workspace.cutsceneCoordinates
-
-function Cutscenes.Setup(plr : Player, cam : Camera)
+function Cutscenes.Init(plr: Player, cam: Camera): {}
 	local self = setmetatable({}, Cutscenes)
 
 	-- Setup basic variables
@@ -48,14 +55,14 @@ function Cutscenes.Setup(plr : Player, cam : Camera)
 	return self
 end
 
-function Cutscenes:Add(name : string, duration : number, splineAlpha : number?)
+function Cutscenes:Add(name: string, duration: number, splineAlpha: number?): ()
 	self._cutscenes[name] = {
-		spline = self:GetSpline(cutsceneCoordinates[name], splineAlpha);
-		duration = duration;
+		spline = self:GetSpline(CutsceneCoordinates[name], splineAlpha),
+		duration = duration
 	}
 end
 
-function Cutscenes:Play(cutsceneName : string, setCamTypeBack : boolean?, disableCoreGui : boolean?)
+function Cutscenes:Play(cutsceneName: string, setCamTypeBack: boolean?, disableCoreGui: boolean?): ()
 	local thisCutscene = self._cutscenes[cutsceneName]
 
 	if thisCutscene then
@@ -143,16 +150,16 @@ function Cutscenes:Play(cutsceneName : string, setCamTypeBack : boolean?, disabl
 	end
 end
 
-function Cutscenes:GetSpline(cutsceneFolder : Folder, splineAlpha : number?)
+function Cutscenes:GetSpline(cutsceneFolder: Folder, splineAlpha: number?): {}
 	local points = {
-		positions = {};
-		angles = {};
+		positions = {},
+		angles = {},
 		vfxData = {
-			FoV = {};
-			Blur = {};
-			Exposure = {};
-			CinematicBarsYOffset = {};
-		};
+			FoV = {},
+			Blur = {},
+			Exposure = {},
+			CinematicBarsYOffset = {}
+		}
 	}
 	local parts = cutsceneFolder:GetChildren()
 
@@ -175,23 +182,23 @@ function Cutscenes:GetSpline(cutsceneFolder : Folder, splineAlpha : number?)
 	end
 
 	return {
-		positions = Splines.Catmull_RomSpline3(points.positions, splineAlpha);
-		angles = Splines.Catmull_RomSpline3(points.angles, splineAlpha);
+		positions = Splines.Catmull_RomSpline3(points.positions, splineAlpha),
+		angles = Splines.Catmull_RomSpline3(points.angles, splineAlpha),
 		vfxData = {
-			FoV = Splines.AkimaSpline(points.vfxData.FoV);
-			Blur = Splines.AkimaSpline(points.vfxData.Blur);
-			Exposure = Splines.AkimaSpline(points.vfxData.Exposure);
-			CinematicBarsYOffset = Splines.AkimaSpline(points.vfxData.CinematicBarsYOffset);
+			FoV = Splines.AkimaSpline(points.vfxData.FoV),
+			Blur = Splines.AkimaSpline(points.vfxData.Blur),
+			Exposure = Splines.AkimaSpline(points.vfxData.Exposure),
+			CinematicBarsYOffset = Splines.AkimaSpline(points.vfxData.CinematicBarsYOffset)
 		}
 	}
 end
 
-function Cutscenes.ClearPartDebug(part : Part)
+function Cutscenes.ClearPartDebug(part: Part): ()
 	part.Transparency = 1
 	part.Decal.Transparency = 1
 end
 
-function Cutscenes.Lerp(a, b, t)
+function Cutscenes.Lerp(a: number, b: number, t: number): number
 	return a + (b - a) * t
 end
 
