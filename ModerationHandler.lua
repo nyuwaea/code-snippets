@@ -1,6 +1,6 @@
 --[[
 		Focuses on moderation, but can also run any sort of command from any user.
-		Commands can be easily set up via the Module:AddRank(...) function and the commands submodule.
+		Commands can be easily set up via the Module:AddCommand(...) function and the commands submodule.
 ]]
 
 ------------► ► ►	SERVICES	◄ ◄ ◄------------
